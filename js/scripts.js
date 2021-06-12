@@ -16,7 +16,7 @@ async function fetchData(url) {
 
 
 Promise.all([
-    fetchData('https://randomuser.me/api/1.3/?results=12&exc=gender,login,registered,id,nat')
+    fetchData('https://randomuser.me/api/1.3/?results=12&nat=us,ca&exc=login,registered,id')
 ])
 .then(data => {
     const results = data[0].results;
