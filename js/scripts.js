@@ -1,4 +1,6 @@
+document.querySelector("body").style.background = "lightblue";
 const gallery = document.getElementById('gallery');
+const employees = [];
 
 /**-----------------------------------
  *          FETCH FUNCTIONS
@@ -10,24 +12,10 @@ async function fetchData(url) {
         const res = await checkStatus(response);
         return res.json();
     } catch (error) {
-        return console.log("Looks like there was a problem!", error);
+        return console.error("There was a problem fetching the data", error);
     }
 }
 
-
-fetchData('https://randomuser.me/api/1.3/?results=12&nat=us&exc=id,login,registered')
-.then(data => {
-    console.log(data.results);
-        
-    generateCard(data.results)
-    generateModalElement();
-    displayCardModal(data.results);
-    buttonToClose();
-});
-
-/**-----------------------------------
- *          HELPER FUNCTIONS
- -------------------------------------*/
 
 function checkStatus(response) {
     if (response.ok) {
@@ -36,6 +24,34 @@ function checkStatus(response) {
         return Promise.reject(new Error(response.statusText));
     }
 }
+
+
+fetchData('https://randomuser.me/api/1.3/?results=12&nat=us&exc=id,login,registered')
+.then(data => {
+    
+    employees.push(...data.results);
+    generateCard(employees)
+    generateModalElement();
+    displayCardModal(employees);
+    buttonToClose();
+});
+
+/**-----------------------------------
+ *          HELPER FUNCTIONS
+ -------------------------------------*/
+
+/**
+    Search markup: You can use the commented out markup below as a template for your search feature, but you must use JS to create and 
+    append it to `search-container` div.
+
+    IMPORTANT: Altering the arrangement of the markup and the 
+    attributes used may break the styles or functionality.
+
+    <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>
+*/
 
 
 function generateCard(data) {
@@ -73,6 +89,7 @@ function generateModalElement() {
     gallery.insertAdjacentHTML("afterEnd", htmlModalElement);
     const modContainer = document.querySelector(".modal-container");
     modContainer.style.display = "none";
+    modContainer.style.background = "orange";
 }
 
 
@@ -97,10 +114,26 @@ function generateModal(data) {
             <p class="modal-text">${address}</p>
             <p class="modal-text">Birthday: ${bDay}</p>
         </div>
+        <div class="modal-btn-container">
+            <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+            <button type="button" id="modal-next" class="modal-next btn">Next</button>
+        </div>
     `;
     const modDiv = document.querySelector(".modal");
     modDiv.insertAdjacentHTML("beforeEnd", htmlModal);
 }
+
+
+// function nextPrevButtons() {
+//     const htmlButtons = `
+//         <div class="modal-btn-container">
+//             <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+//             <button type="button" id="modal-next" class="modal-next btn">Next</button>
+//         </div>
+//     `;
+//     const modInfo = document.querySelector(".modal-info.container");
+//     modInfo.insertAdjacentHTML("afterEnd", htmlbuttons);
+// }
 
 /**-----------------------------------
  *        FORMATTING FUNCTIONS
@@ -124,18 +157,33 @@ function displayCardModal(data) {
     for (let i = 0; i < cards.length; i++) {
         cards[i].addEventListener("click", () => {
             generateModal(data[i]);
-
             gallery.nextElementSibling.style.display = "";
         });
     }
 }
 
 
-function buttonToClose() {
-    const buttonClose = document.querySelector("#modal-close-btn");
-    
-    buttonClose.addEventListener("click", () => {
-        buttonClose.parentNode.parentNode.style.display = "none";
-        buttonClose.nextElementSibling.remove();
+function prevButton(data) {
+    const prev = document.querySelector("#modal-prev");
+    prev.addEventListener("click", (e)=> {
+        const cards = document.querySelectorAll
     });
 }
+
+
+// function nextPrev(data) {
+//     const ntPvButton = document.querySelectorAll("#modal");
+// }
+
+
+function buttonToClose() {
+    const buttonClose = document.querySelector("#modal-close-btn");
+        
+    buttonClose.addEventListener("click", () => {
+        const modInfoCon = document.querySelector(".modal-info-container")
+        buttonClose.parentNode.parentNode.style.display = "none";
+        modInfoCon.nextElementSibling.remove();
+        modInfoCon.remove();
+    });
+}
+console.log(employees);
