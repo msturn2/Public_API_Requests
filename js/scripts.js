@@ -12,23 +12,23 @@ let employeeDataArray = [];
  -------------------------------------*/
 
 //User can still interact with page while programing loads
-async function fetchData(url) {
-    try {
-        const response = await fetch(url);
-        const res = await checkStatus(response);
-        const result = await res.json();
-        return result.results
-    } catch (error) {
-        const errorDiv = `
-            <div class="error">
-                <h2>Oh no....something went wrong! Please contact support
-                </h2>
-            </div>`;
-        //insertAdjacentHTML used over innerHTML because of directions
-        gallery.insertAdjacentHTML("beforeEnd", errorDiv);
-        return console.error("There was a problem fetching the data", error);
-    }
-}
+// async function fetchData(url) {
+//     try {
+//         const response = await fetch(url);
+//         const res = await checkStatus(response);
+//         const result = await res.json();
+//         return result.results
+//     } catch (error) {
+//         const errorDiv = `
+//             <div class="error">
+//                 <h2>Oh no....something went wrong! Please contact support
+//                 </h2>
+//             </div>`;
+//         //insertAdjacentHTML used over innerHTML because of directions
+//         gallery.insertAdjacentHTML("beforeEnd", errorDiv);
+//         return console.error("There was a problem fetching the data", error);
+//     }
+// }
 
 
 function checkStatus(response) {
@@ -40,13 +40,30 @@ function checkStatus(response) {
 }
 
 
-fetchData(api)
+fetch(api)
+    .then(checkStatus)
+    .then(res => res.json())
+    .then(res => res.results)
     .then(generateCard)
     .then(genModCon)
+    .catch(displayError)
 
 /**-----------------------------------
  *          HELPER FUNCTIONS
  -------------------------------------*/
+
+function displayError(error) {
+    const errorDiv = `
+        <div class="error">
+            <h2>Oh no....something went wrong! Please contact support
+            </h2>
+        </div>
+    `;
+    //insertAdjacentHTML used over innerHTML because of directions
+    gallery.insertAdjacentHTML("beforeEnd", errorDiv);
+    return console.error("There was a problem fetching the data", error);
+}
+
 
 const displaySearchBar = () => {
     const htmlSearch = `
@@ -58,8 +75,7 @@ const displaySearchBar = () => {
     document.querySelector(".search-container").insertAdjacentHTML("afterEnd", htmlSearch);
 }
 //Called function in order to push to the DOM. Placed function
-//call outside of fetchData call because element wouldn't exist
-//yet
+//call outside of fetch call because element wouldn't exist yet
 displaySearchBar();
 
 //search for employee by name
@@ -77,13 +93,13 @@ const search = (event) => {
 }
 
 //chose function declaration instead of function expression because
-//of scope for fetchData call
+//of scope for fetch call
 function generateCard(data) {
     //setting employeeDataArray = data allows access to data from 
     //fetchData call
     employeeDataArray = data;
     //looped over employeeDataArray to creat each individual card
-    employeeDataArray.forEach((result, index)  => {
+    employeeDataArray.forEach((result, index) => {
         //object literals allow each cards specific data to populate
         const picture = result.picture.large;
         const name = `${result.name.first} ${result.name.last}`;
@@ -164,6 +180,7 @@ const selectDataIndex = (button) => {
     const modalIndex = +modInfoCon.getAttribute("data-index");
     //findIndex used to access employee index
     const cardIndex = [...cards]
+        // .filter(card => card.style.display === "")
         .findIndex(card => +(card.attributes[1].value) === modalIndex);
     //ternary used to determine location index so that event listener
     //logic below will work
@@ -175,11 +192,29 @@ const selectDataIndex = (button) => {
     const nextIndex = +(cards[nextModInfo].getAttribute("data-index"));
     //conditional returns direction for lower portion of body
     //eventListener
+    
+    
     if (button === "previous") {
         return prevIndex;
     } else if (button === "next") {
         return nextIndex;
     }
+
+    // [...cards].filter(card => {
+    //     if (card.style.display === "") {
+    //         if (button === "previous") {
+    //             return prevIndex;
+    //         } else if (button === "next") {
+    //             return nextIndex;
+    //         }
+    //     } else {
+    //         if (button === "previous") {
+    //             prevIndex - 1;
+    //         } else if (button === "next") {
+    //             nextIndex + 1;
+    //         }
+    //     }
+    // });
 }
 
 /**-----------------------------------
