@@ -11,26 +11,6 @@ let employeeDataArray = [];
  *          FETCH FUNCTIONS
  -------------------------------------*/
 
-//User can still interact with page while programing loads
-// async function fetchData(url) {
-//     try {
-//         const response = await fetch(url);
-//         const res = await checkStatus(response);
-//         const result = await res.json();
-//         return result.results
-//     } catch (error) {
-//         const errorDiv = `
-//             <div class="error">
-//                 <h2>Oh no....something went wrong! Please contact support
-//                 </h2>
-//             </div>`;
-//         //insertAdjacentHTML used over innerHTML because of directions
-//         gallery.insertAdjacentHTML("beforeEnd", errorDiv);
-//         return console.error("There was a problem fetching the data", error);
-//     }
-// }
-
-
 function checkStatus(response) {
     if (response.ok) {
         return Promise.resolve(response);
@@ -178,43 +158,28 @@ const selectDataIndex = (button) => {
     const cards = document.querySelectorAll(".card");
     const modInfoCon = document.querySelector(".modal-info-container");
     const modalIndex = +modInfoCon.getAttribute("data-index");
+    //filter limits scrolling through displayable cards based on user's 
+    //search input
+    const cardFilter = [...cards]
+        .filter(card => card.style.display === "");
     //findIndex used to access employee index
-    const cardIndex = [...cards]
-        // .filter(card => card.style.display === "")
+    const cardIndex = [...cardFilter]
         .findIndex(card => +(card.attributes[1].value) === modalIndex);
     //ternary used to determine location index so that event listener
     //logic below will work
-    const prevModInfo = cardIndex - 1 >= 0 ? cardIndex - 1 : cards.length - 1;
+    const prevModInfo = cardIndex - 1 >= 0 ? cardIndex - 1 : cardFilter.length - 1;
     //data-index that was inserted in both generateCard() and
     //displayModal() is used to access prev/next in employeeDataArray
-    const prevIndex = +(cards[prevModInfo].getAttribute("data-index"));
-    const nextModInfo = cardIndex + 1 <= cards.length - 1 ? cardIndex + 1 : 0;
-    const nextIndex = +(cards[nextModInfo].getAttribute("data-index"));
+    const prevIndex = +(cardFilter[prevModInfo].getAttribute("data-index"));
+    const nextModInfo = cardIndex + 1 <= cardFilter.length - 1 ? cardIndex + 1 : 0;
+    const nextIndex = +(cardFilter[nextModInfo].getAttribute("data-index"));
     //conditional returns direction for lower portion of body
     //eventListener
-    
-    
     if (button === "previous") {
         return prevIndex;
     } else if (button === "next") {
         return nextIndex;
     }
-
-    // [...cards].filter(card => {
-    //     if (card.style.display === "") {
-    //         if (button === "previous") {
-    //             return prevIndex;
-    //         } else if (button === "next") {
-    //             return nextIndex;
-    //         }
-    //     } else {
-    //         if (button === "previous") {
-    //             prevIndex - 1;
-    //         } else if (button === "next") {
-    //             nextIndex + 1;
-    //         }
-    //     }
-    // });
 }
 
 /**-----------------------------------
