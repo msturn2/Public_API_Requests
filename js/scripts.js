@@ -128,26 +128,33 @@ const displayModal = (index) => {
     const htmlModal = `
         <div class="modal">
             <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-                <div class="modal-info-container" data-index="${index}">
-                    <img class="modal-img" src="${picture.large}" alt="profile picture">
-                    <h3 id="name" class="modal-name cap">${fullName}</h3>
-                    <p class="modal-text">${email}</p>
-                    <p class="modal-text cap">${city}</p>
-                    <hr>
-                    <p class="modal-text">Mobile: ${cellNum}</p>
-                    <p class="modal-text">${address}</p>
-                    <p class="modal-text">Birthday: ${bDay}</p>
-                </div>
+            <div class="modal-info-container" data-index="${index}">
+                <img class="modal-img" src="${picture.large}" alt="profile picture">
+                <h3 id="name" class="modal-name cap">${fullName}</h3>
+                <p class="modal-text">${email}</p>
+                <p class="modal-text cap">${city}</p>
+                <hr>
+                <p class="modal-text">Mobile: ${cellNum}</p>
+                <p class="modal-text">${address}</p>
+                <p class="modal-text">Birthday: ${bDay}</p>
             </div>
-            <div class="modal-btn-container">
-                <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-                <button type="button" id="modal-next" class="modal-next btn">Next</button>
-            </div>
+        </div>
     `;
+    const htmlModalBtn = `
+        <div class="modal-btn-container">
+            <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+            <button type="button" id="modal-next" class="modal-next btn">Next</button>
+        </div>
+    `;
+
     const modCon = document.querySelector(".modal-container");
-    //chose innerHTML vs. insertAdjacentHTML because it made life 
-    //easier....lol
-    modCon.innerHTML = htmlModal;
+    const cards = document.querySelectorAll(".card");
+    //filtered cards then used conditional to determine if prev/next
+    //buttons should be present
+    const displayBtn = [...cards].filter(card => card.style.display === "");
+    displayBtn.length > 1 ? 
+        modCon.innerHTML = htmlModal + htmlModalBtn :
+        modCon.innerHTML = htmlModal;
     modCon.style.display = "";
     //custom styling added
     modCon.style.background = "orange";
